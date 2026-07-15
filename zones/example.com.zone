@@ -1,4 +1,0 @@
-$TTL 300
-; generated with dnscontrol 2026-07-15T07:46:41-08:00
-@                IN SOA   DEFAULT_NOT_SET. DEFAULT_NOT_SET. 2026071501 3600 600 604800 1440
-                 IN A     1.2.3.5
