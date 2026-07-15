@@ -8,7 +8,7 @@ D("silverdagger41.com", REG_NONE, DnsProvider(DSP_CLOUDFLARE),
 	IGNORE("_acme-challenge", "TXT"),
 	IGNORE("_acme-challenge.**", "TXT"),
 
-	A("@", IP("1.2.3.4"), CF_PROXY_ON),
+	A("@", IP("1.2.3.5"), CF_PROXY_ON),
 	CNAME("www", "@"),
 
 	// Enter the land of make-believe: Pretend we use Google for email
