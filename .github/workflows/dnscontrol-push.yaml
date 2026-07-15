@@ -1,0 +1,27 @@
+name: Push DNS Changes
+
+on:
+  push:
+    branches:
+      - 'main'
+    paths:
+      - '/dnsconfig.js'
+      - '/creds.json'
+      - '/domains/*.js'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    if: ${{ !cancelled() }}
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v7
+
+      - name: DNSControl Push
+        uses: DNSControl/dnscontrol-action
+        with:
+          check: true
+          cmdargs: push
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+

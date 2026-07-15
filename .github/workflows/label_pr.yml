@@ -1,0 +1,127 @@
+name: "DNS Risk Labeler & Validation"
+
+on:
+  pull_request:
+    types: [opened, edited, synchronize]
+
+jobs:
+  label-and-validate:
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write  # Required to add/remove labels and post comments
+    steps:
+      # 1. PARSE RISK LEVELS FROM REMAINING PLAIN TEXT KEYS
+      - name: Parse Low Risk
+        id: low_risk
+        uses: actions-ecosystem/action-regex-match@v2
+        with:
+          text: ${{ github.event.pull_request.body }}
+          regex: '\*\*\s*RISK\s+LEVEL\s*:\s*\*\*\s*.*Low'
+
+      - name: Parse Medium Risk
+        id: med_risk
+        uses: actions-ecosystem/action-regex-match@v2
+        with:
+          text: ${{ github.event.pull_request.body }}
+          regex: '\*\*\s*RISK\s+LEVEL\s*:\s*\*\*\s*.*Medium'
+
+      - name: Parse High Risk
+        id: high_risk
+        uses: actions-ecosystem/action-regex-match@v2
+        with:
+          text: ${{ github.event.pull_request.body }}
+          regex: '\*\*\s*RISK\s+LEVEL\s*:\s*\*\*\s*.*High'
+
+      # 2. APPLY OR REMOVE LABELS
+      - name: Handle Low Risk Label
+        uses: actions-ecosystem/action-add-labels@v1
+        if: steps.low_risk.outputs.match != ''
+        with:
+          labels: 'dns-low-risk'
+
+      - name: Remove Low Risk Label
+        uses: actions-ecosystem/action-remove-labels@v1
+        if: steps.low_risk.outputs.match == ''
+        with:
+          labels: 'dns-low-risk'
+          fail_on_error: false
+
+      - name: Handle Medium Risk Label
+        uses: actions-ecosystem/action-add-labels@v1
+        if: steps.med_risk.outputs.match != ''
+        with:
+          labels: 'dns-med-risk'
+
+      - name: Remove Medium Risk Label
+        uses: actions-ecosystem/action-remove-labels@v1
+        if: steps.med_risk.outputs.match == ''
+        with:
+          labels: 'dns-med-risk'
+          fail_on_error: false
+
+      - name: Handle High Risk Label
+        uses: actions-ecosystem/action-add-labels@v1
+        if: steps.high_risk.outputs.match != ''
+        with:
+          labels: 'dns-high-risk'
+
+      - name: Remove High Risk Label
+        uses: actions-ecosystem/action-remove-labels@v1
+        if: steps.high_risk.outputs.match == ''
+        with:
+          labels: 'dns-high-risk'
+          fail_on_error: false
+
+      # 3. CLEAN OLD COMMENTS & ENFORCE SELECTION LINTING
+      - name: Clean Old DNS Lint Comments and Enforce Rules
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { owner, repo } = context.repo;
+            const issue_number = context.issue.number;
+            const errorFootprint = "⚠️ **DNS Validation Error:**";
+
+            // --- STEP A: FIND AND DELETE PREVIOUS LINT COMMENTS ---
+            const comments = await github.rest.issues.listComments({
+              owner,
+              repo,
+              issue_number,
+              per_page: 100
+            });
+
+            const botComments = comments.data.filter(comment => 
+              comment.user.type === 'Bot' && comment.body.includes(errorFootprint)
+            );
+
+            for (const comment of botComments) {
+              await github.rest.issues.deleteComment({
+                owner,
+                repo,
+                comment_id: comment.id
+              });
+            }
+
+            // --- STEP B: READ REGEX MATCHES FROM PREVIOUS STEPS ---
+            const lowRisk = "${{ steps.low_risk.outputs.match }}";
+            const medRisk = "${{ steps.med_risk.outputs.match }}";
+            const highRisk = "${{ steps.high_risk.outputs.match }}";
+
+            // --- STEP C: EXECUTE RISK SELECTION LINT RULES ---
+            // Case 1: No choices selected
+            if (!lowRisk && !medRisk && !highRisk) {
+              const errMsg = `${errorFootprint} You must select exactly one Expected Risk Level (delete the ones that don't apply) before this PR can be merged.`;
+              await github.rest.issues.createComment({ owner, repo, issue_number, body: errMsg });
+              core.setFailed(errMsg);
+              return;
+            }
+
+            // Case 2: User forgot to delete the choices and left multiple intact
+            const selectedCount = [lowRisk, medRisk, highRisk].filter(Boolean).length;
+            if (selectedCount > 1) {
+              const errMsg = `${errorFootprint} Multiple risk options detected. Please edit your description and delete the words that do not apply, leaving only ONE clear choice (e.g. * **RISK LEVEL:** Medium).`;
+              await github.rest.issues.createComment({ owner, repo, issue_number, body: errMsg });
+              core.setFailed(errMsg);
+              return;
+            }
+
+            console.log("DNS risk level selection lint passed successfully.");
