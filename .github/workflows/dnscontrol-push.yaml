@@ -5,9 +5,9 @@ on:
     branches:
       - 'main'
     paths:
-      - '/dnsconfig.js'
-      - '/creds.json'
-      - '/domains/*.js'
+      - 'dnsconfig.js'
+      - 'creds.json'
+      - 'domains/*.js'
 
 jobs:
   deploy:
