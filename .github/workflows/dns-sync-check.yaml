@@ -83,14 +83,14 @@ jobs:
           CURRENT_DATE=$(date -u +"%Y-%m-%d %H:%M UTC")
           
           BODY="### ⚠️ Out-of-Sync DNS Changes Detected
-          The local DNS configuration files do not match your live provider environments. Closing this issue will automatically execute \`dnscontrol push\` to re-sync production to your Git source of truth.
+          The local DNS configuration files do not match your live provider environments. Closing this issue will automatically execute \\\`dnscontrol push\\\` to re-sync production to your Git source of truth.
           
           *Last checked/updated: $CURRENT_DATE*
           
           #### 📋 Current Planned Adjustments:
-          \`\`\`text
+          \\\`\\\`\\\`text
           $PREVIEW_LOG
-          \`\`\`"
+          \\\`\\\`\\\`"
           
           echo "body<<EOF" >> $GITHUB_OUTPUT
           echo "$BODY" >> $GITHUB_OUTPUT
