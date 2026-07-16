@@ -80,7 +80,7 @@ jobs:
         id: build_content
         run: |
           PREVIEW_LOG=$(cat dnscontrol.log)
-          CURRENT_DATE=$(date -u +"%Y-%m-%d %H:%M UTC")
+          CURRENT_DATE=$(TZ='America/Anchorage' date -u +"%Y-%m-%d %H:%M %Z")
           
           BODY="### ⚠️ Out-of-Sync DNS Changes Detected
           The local DNS configuration files do not match your live provider environments. Closing this issue will automatically execute \\\`dnscontrol push\\\` to re-sync production to your Git source of truth.
@@ -105,7 +105,7 @@ jobs:
             await github.rest.issues.create({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              title: "🚨 Out-of-Sync DNS Records Found",
+              title: "Out-of-Sync DNS Records Found",
               body: `${{ steps.build_content.outputs.body }}`,
               labels: ['dns-out-of-sync']
             });
