@@ -40,7 +40,7 @@ jobs:
           cmdargs: push
           post_summary: true
         env:
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_API_TOKEN_BAD: ${{ secrets.CLOUDFLARE_API_TOKEN }}
 
       # 3. LOG SYNC COMPLETION RECEIPT TO THE ISSUE TIMELINE
       - name: Log Sync Completion Receipt
