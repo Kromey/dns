@@ -1,0 +1,84 @@
+name: "Sync DNS From Issue"
+
+on:
+  issue_comment:
+    types: [created]
+
+jobs:
+  apply-dns-sync:
+    # Trigger only if:
+    # 1. It is a true tracking ticket (contains the dns-out-of-sync label)
+    # 2. The comment explicitly contains the keyword string "/deploy-dns"
+    if: |
+      contains(github.event.issue.labels.*.name, 'dns-out-of-sync') &&
+      contains(github.event.comment.body, '/deploy-dns')
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write    # Required to post a receipt comment
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v7
+        
+      # 1. ADD A REACTION TO ACKNOWLEDGE THE COMMAND
+      - name: React to Comment
+        uses: actions/github-script@v9
+        with:
+          script: |
+            await github.rest.reactions.createForIssueComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              comment_id: context.payload.comment.id,
+              content: 'rocket'
+            });
+
+      # 2. EXECUTE THE LIVE SYNC
+      - name: Execute DNSControl Push
+        id: dns_push
+        uses: DNSControl/dnscontrol-action@6c99137eebf667295447b7fd2ec443e51b53a48e
+        continue-on-error: true
+        with:
+          check: true
+          cmdargs: push
+
+      # 3. LOG SYNC COMPLETION RECEIPT TO THE PR/ISSUE TIMELINE
+      - name: Log Sync Completion Receipt
+        if: always() # Ensure this runs even if the push command fails, to alert the team
+        uses: actions/github-script@v9
+        with:
+          script: |
+            const { owner, repo } = context.repo;
+            const issue_number = context.issue.number;
+            const pushStatus = "${{ steps.dns_push.outcome }}";
+            
+            if (pushStatus === 'success') {
+              // Build success receipt message
+              const successMsg = `✅ **DNS Sync Successful:** Live records have been updated to match your master Git configuration files.\n\nClosing this tracking issue automatically since the environment is back in sync.`;
+              
+              await github.rest.issues.createComment({
+               owner,
+               repo,
+               issue_number,
+               body: successMsg
+              });
+              
+              // Automatically close the issue since production is healthy
+              await github.rest.issues.update({
+                owner,
+                repo,
+                issue_number,
+                state: 'closed',
+                state_reason: 'completed'
+              });
+              
+            } else {
+              // Build failure warning message
+              const failureMsg = `❌ **DNS Sync Failed:** The \`dnscontrol push\` execution failed.\n\nPlease investigate the [GitHub Action logs](https://github.com{owner}/${repo}/actions/runs/${context.runId}) to resolve the issue.`;
+              
+              await github.rest.issues.createComment({
+               owner,
+               repo,
+               issue_number,
+               body: failureMsg
+              });
+              core.setFailed("DNSControl push failed.");
+            }
