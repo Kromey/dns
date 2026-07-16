@@ -90,7 +90,9 @@ jobs:
           #### 📋 Current Planned Adjustments:
           \\\`\\\`\\\`text
           $PREVIEW_LOG
-          \\\`\\\`\\\`"
+          \\\`\\\`\\\`
+          
+          **To automatically execute this plan** and resolve this issue, comment with \\\`/deploy-dns\\\`"
           
           echo "body<<EOF" >> $GITHUB_OUTPUT
           echo "$BODY" >> $GITHUB_OUTPUT
