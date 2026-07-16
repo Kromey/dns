@@ -128,7 +128,7 @@ jobs:
             });
 
             // Step 2: Leave an alert comment in the discussion log
-            const noticeComment = `🔄 **Notice:** The execution plan was updated on **${updateTime}**. Additional changes or configuration shifts were discovered during the nightly sweep. Please review the updated plan in the main description description before closing this issue.`;
+            const noticeComment = `🔄 **Notice:** The execution plan was updated on **${updateTime}**. Please review the current plan in the main description description before closing this issue.`;
             
             await github.rest.issues.createComment({
               owner: context.repo.owner,
