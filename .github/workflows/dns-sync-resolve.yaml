@@ -16,9 +16,6 @@ jobs:
     permissions:
       issues: write    # Required to post a receipt comment
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v7
-        
       # 1. ADD A REACTION TO ACKNOWLEDGE THE COMMAND
       - name: React to Comment
         uses: actions/github-script@v9
@@ -32,6 +29,8 @@ jobs:
             });
 
       # 2. EXECUTE THE LIVE SYNC
+      - name: Checkout Repository
+        uses: actions/checkout@v7
       - name: Execute DNSControl Push
         id: dns_push
         uses: DNSControl/dnscontrol-action@6c99137eebf667295447b7fd2ec443e51b53a48e
@@ -43,7 +42,7 @@ jobs:
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
 
-      # 3. LOG SYNC COMPLETION RECEIPT TO THE PR/ISSUE TIMELINE
+      # 3. LOG SYNC COMPLETION RECEIPT TO THE ISSUE TIMELINE
       - name: Log Sync Completion Receipt
         if: always() # Ensure this runs even if the push command fails, to alert the team
         uses: actions/github-script@v9
@@ -75,7 +74,7 @@ jobs:
               
             } else {
               // Build failure warning message
-              const failureMsg = `❌ **DNS Sync Failed:** The \`dnscontrol push\` execution failed.\n\nPlease investigate the [GitHub Action logs](https://github.com{owner}/${repo}/actions/runs/${context.runId}) to resolve the issue.`;
+              const failureMsg = `❌ **DNS Sync Failed:** The \`dnscontrol push\` execution failed.\n\nPlease investigate the [GitHub Action logs](https://github.com/${owner}/${repo}/actions/runs/${context.runId}) to resolve the issue.`;
               
               await github.rest.issues.createComment({
                owner,
