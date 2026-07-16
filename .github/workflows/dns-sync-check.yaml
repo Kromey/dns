@@ -117,7 +117,6 @@ jobs:
         with:
           script: |
             const issueNumber = Number("${{ steps.find_issue.outputs.issue_id }}");
-            const updateTime = new Date().toUTCString();
             
             // Step 1: Update the description main text box
             await github.rest.issues.update({
@@ -128,7 +127,7 @@ jobs:
             });
 
             // Step 2: Leave an alert comment in the discussion log
-            const noticeComment = `🔄 **Notice:** The execution plan was updated on **${updateTime}**. Please review the current plan in the main description description before closing this issue.`;
+            const noticeComment = `🔄 **Notice:** The execution plan was updated. Please review the current plan in the main description description before closing this issue.`;
             
             await github.rest.issues.createComment({
               owner: context.repo.owner,
