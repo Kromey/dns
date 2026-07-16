@@ -8,6 +8,9 @@ on:
       - 'dnsconfig.js'
       - 'creds.json'
       - 'domains/*.js'
+  schedule:
+     - cron: "15 1 * * *"
+       timezone: "America/Anchorage"
 
 jobs:
   deploy:
