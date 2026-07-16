@@ -106,7 +106,7 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               title: "🚨 Out-of-Sync DNS Records Found",
-              body: `${{ steps.build_content.outputs.body }}`,
+              body: "${{ steps.build_content.outputs.body }}",
               labels: ['dns-out-of-sync']
             });
 
@@ -124,11 +124,11 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: issueNumber,
-              body: `${{ steps.build_content.outputs.body }}`
+              body: "${{ steps.build_content.outputs.body }}"
             });
 
             // Step 2: Leave an alert comment in the discussion log
-            const noticeComment = `🔄 **Notice:** The execution plan was updated on **${updateTime}**. Additional changes or configuration shifts were discovered during the nightly sweep. Please review the updated plan in the main description description before closing this issue.`;
+            const noticeComment = "🔄 **Notice:** The execution plan was updated on **${updateTime}**. Additional changes or configuration shifts were discovered during the nightly sweep. Please review the updated plan in the main description description before closing this issue.";
             
             await github.rest.issues.createComment({
               owner: context.repo.owner,
