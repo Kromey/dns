@@ -30,7 +30,7 @@ jobs:
       # 2. SEARCH FOR AN EXISTING OPEN TRACKING ISSUE
       - name: Search for Open Desync Issue
         id: find_issue
-        uses: actions/github-script@v7
+        uses: actions/github-script@v9
         with:
           script: |
             const issues = await github.rest.issues.listForRepo({
@@ -50,7 +50,7 @@ jobs:
       # 3. CASE A: SYSTEM IS BACK IN SYNC (Exit code is 0, but an issue is still open)
       - name: Auto-Close Issue If Fixed Manually
         if: steps.dns_preview.outcome == 'success' && steps.find_issue.outputs.issue_id != ''
-        uses: actions/github-script@v7
+        uses: actions/github-script@v9
         with:
           script: |
             const issueNumber = Number("${{ steps.find_issue.outputs.issue_id }}");
@@ -101,7 +101,7 @@ jobs:
       # 5. CASE B: OUT OF SYNC & NO TRACKING ISSUE EXISTS -> CREATE IT
       - name: Create New Out-of-Sync Issue
         if: steps.dns_preview.outcome != 'success' && steps.find_issue.outputs.issue_id == ''
-        uses: actions/github-script@v7
+        uses: actions/github-script@v9
         with:
           script: |
             await github.rest.issues.create({
@@ -115,7 +115,7 @@ jobs:
       # 6. CASE C: OUT OF SYNC & TRACKING ISSUE ALREADY EXISTS -> UPDATE & COMMENT
       - name: Update Existing Issue and Post Notification Comment
         if: steps.dns_preview.outcome != 'success' && steps.find_issue.outputs.issue_id != ''
-        uses: actions/github-script@v7
+        uses: actions/github-script@v9
         with:
           script: |
             const issueNumber = Number("${{ steps.find_issue.outputs.issue_id }}");
