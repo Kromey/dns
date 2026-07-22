@@ -13,7 +13,7 @@ jobs:
       issues: write # Required to create, edit, comment, and close issues
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       # 1. RUN PREVIEW (Always runs to get the absolute current live status)
       - name: DNSControl Preview
