@@ -12,6 +12,8 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    permissions:
+      issues: write # Required to close any out-of-sync issues
     if: ${{ !cancelled() }}
     steps:
       - name: Checkout repo
@@ -22,6 +24,46 @@ jobs:
         with:
           check: true
           cmdargs: push
+          post_summary: true
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          
+      - name: Close DNS Out-of-Sync Issues
+        uses: actions/github-script@v9
+        with:
+          script: |
+            // 1. Find all open issues with the out-of-sync label
+            const issues = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              labels: 'dns-out-of-sync'
+            });
+
+            if (issues.data.length === 0) {
+              console.log('No open issues found with the "dns-out-of-sync" label.');
+              return;
+            }
+
+            // 2. Iterate through each matching issue
+            for (const issue of issues.data) {
+              console.log(`Processing issue #${issue.number}: ${issue.title}`);
+
+              // Add the resolution comment
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issue.number,
+                body: '🚀 These differences have been resolved by deploying the latest DNS configuration. Closing this issue.'
+              });
+
+              // Close the issue
+              await github.rest.issues.update({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issue.number,
+                state: 'closed',
+                state_reason: 'completed' // Marks it as closed/completed
+              });
+            }
 
