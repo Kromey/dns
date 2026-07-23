@@ -82,17 +82,19 @@ jobs:
           PREVIEW_LOG=$(sed -e 's/#[0-9]\+:\s*//' dnscontrol.log)
           CURRENT_DATE=$(TZ='America/Anchorage' date +"%Y-%m-%d %H:%M %Z")
           
-          BODY="### ⚠️ Out-of-Sync DNS Changes Detected
-          The local DNS configuration files do not match your live provider environments.
+          BODY="### ⚠️ Live DNS records do not match configuration files.
           
           *Last checked/updated: $CURRENT_DATE*
           
-          #### 📋 Current Planned Adjustments:
+          <details open><summary>DNSControl Results</summary>
+
+          ### DNSControl Results
           \\\`\\\`\\\`diff
           $PREVIEW_LOG
           \\\`\\\`\\\`
+          </details>
           
-          **To automatically execute this plan** and resolve this issue, comment with \\\`/deploy-dns\\\`"
+          **To automatically update/correct DNS records** to match the configuration files, comment with \\\`/deploy-dns\\\`"
           
           echo "body<<EOF" >> $GITHUB_OUTPUT
           echo "$BODY" >> $GITHUB_OUTPUT
