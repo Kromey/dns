@@ -120,22 +120,12 @@ jobs:
           script: |
             const issueNumber = Number("${{ steps.find_issue.outputs.issue_id }}");
             
-            // Step 1: Update the description main text box
+            // Update the description main text box
             await github.rest.issues.update({
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: issueNumber,
               body: `${{ steps.build_content.outputs.body }}`
             });
-
-            // Step 2: Leave an alert comment in the discussion log
-            const noticeComment = `🔄 **Notice:** The execution plan was updated. Please review the current plan in the main description description before closing this issue.`;
-            
-            await github.rest.issues.createComment({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: issueNumber,
-              body: noticeComment
-            });
-            console.log(`Refreshed descriptions and appended a timeline comment to issue #${issueNumber}`);
+            console.log(`Refreshed description on issue #${issueNumber}`);
 
