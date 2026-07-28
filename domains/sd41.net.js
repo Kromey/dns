@@ -10,6 +10,9 @@ D("sd41.net", REG_NONE, DnsProvider(DSP_CLOUDFLARE),
 	CNAME("email", "mailgun.org."),
 	MX("mail2", 10, "mx5.mapipro.com."),
 
+  	// Short-lived names for DNS resolution testing
+  	A("*.test", "127.0.0.7", TTL(60), CF_PROXY_OFF),
+
 	SPF_BUILDER({
 		label: "@",
 		ttl: 60,
