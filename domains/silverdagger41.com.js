@@ -8,7 +8,7 @@ D("silverdagger41.com", REG_NONE, DnsProvider(DSP_CLOUDFLARE),
 	IGNORE("_acme-challenge", "TXT"),
 	IGNORE("_acme-challenge.**", "TXT"),
 
-	A("@", IP("1.2.3.5"), CF_PROXY_ON),
+	A("@", IP("1.2.3.3"), CF_PROXY_ON),
   	CNAME("www", "@", CF_PROXY_ON),
 
   	TXT("@", "This is a TXT record."),
