@@ -1,5 +1,3 @@
-var sif_ip = IP("72.14.189.224");
-var sif_ip6 = "2600:3c00:e000:768::cafe:babe";
 
 D("kromey.us", REG_NONE, DnsProvider(DSP_CLOUDFLARE),
 	DefaultTTL(1),
