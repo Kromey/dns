@@ -35,7 +35,7 @@ jobs:
       - name: Build PR Comment
         id: build_content
         run: |
-          PREVIEW_LOG=$(sed -e 's/#[0-9]\+:\s*//' dnscontrol.log)
+          PREVIEW_LOG=$(sed -e 's/^\(#[0-9]\+:\s*\([+-]\)\)/\2 \1/' -e 's/^\(#[0-9]\+:\s*±\)/! \1/' dnscontrol.log)
           
           BODY="<details open><summary>DNSControl Results</summary>
 
