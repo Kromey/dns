@@ -10,3 +10,6 @@ require("domains/kromey.us.js");
 require("domains/sd41.net.js");
 require("domains/silverdagger41.com.js");
 
+require("domains/ladybugwoodwork.com.js");
+require("domains/ladybugwoodworking.com.js");
+
