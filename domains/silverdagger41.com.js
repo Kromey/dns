@@ -8,18 +8,6 @@ D("silverdagger41.com", REG_NONE, DnsProvider(DSP_CLOUDFLARE),
 	IGNORE("_acme-challenge", "TXT"),
 	IGNORE("_acme-challenge.**", "TXT"),
 
-	A("@", IP("1.2.3.3"), CF_PROXY_ON),
-  	CNAME("www", "@", CF_PROXY_ON),
-
-  	TXT("@", "This is a TXT record."),
-
-	// Enter the land of make-believe: Pretend we use Google for email
-	MX("@", 1, "aspmx.l.google.com."),
-	MX("@", 5, "alt1.aspmx.l.google.com."),
-	MX("@", 5, "alt2.aspmx.l.google.com."),
-	MX("@", 10, "alt3.aspmx.l.google.com."),
-	MX("@", 10, "alt4.aspmx.l.google.com."),
-
 	// This is a non-sending domain, ensure any email "from" us is rejected
 	DMARC_BUILDER({
 		policy: "reject",
@@ -37,4 +25,6 @@ D("silverdagger41.com", REG_NONE, DnsProvider(DSP_CLOUDFLARE),
 			"-all",
 		],
 	}),
+  	// Also non-receiving
+  	MX("@", 0, "."),
 );
