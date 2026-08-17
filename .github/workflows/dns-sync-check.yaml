@@ -5,6 +5,7 @@ on:
     - cron: '0 2 * * *' # Fires nightly at 2:00 AM
       timezone: "America/Anchorage"
   workflow_dispatch:   # Allows manual trigger for testing
+  workflow_call: # Allows other workflows to call this one
 
 jobs:
   check-sync:
