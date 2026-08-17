@@ -27,7 +27,7 @@ jobs:
           check: true
           cmdargs: preview
           post_summary: true
-          post_pr_comment: false
+          post_pr_comment: '' # Until #67 is merged to resolve #64, this should work while `false` still posts the comment
           output_file: 'dnscontrol.log'
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
