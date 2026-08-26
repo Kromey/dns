@@ -20,7 +20,7 @@ jobs:
         uses: actions/checkout@v7
 
       - name: DNSControl Push
-        uses: DNSControl/dnscontrol-action@6c99137eebf667295447b7fd2ec443e51b53a48e
+        uses: DNSControl/dnscontrol-action@fa49fa41aa378803dbd25dc49a1f580f0dcacfe7
         with:
           check: true
           cmdargs: push
