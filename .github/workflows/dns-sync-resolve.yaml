@@ -33,7 +33,7 @@ jobs:
         uses: actions/checkout@v7
       - name: Execute DNSControl Push
         id: dns_push
-        uses: DNSControl/dnscontrol-action@6c99137eebf667295447b7fd2ec443e51b53a48e
+        uses: DNSControl/dnscontrol-action@529789a3522a918aef41a1b56c0de435b0f8bc78
         continue-on-error: true
         with:
           check: true
