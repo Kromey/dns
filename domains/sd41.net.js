@@ -7,7 +7,6 @@ D("sd41.net", REG_NONE, DnsProvider(DSP_CLOUDFLARE),
 	A("kromey", "72.14.189.224", CF_PROXY_ON),
 	A("static", "72.14.189.224", CF_PROXY_ON),
 
-	CNAME("email", "mailgun.org."),
 	MX("mail2", 10, "mx5.mapipro.com."),
 
   	// Short-lived names for DNS resolution testing
@@ -36,12 +35,6 @@ D("sd41.net", REG_NONE, DnsProvider(DSP_CLOUDFLARE),
 			"mailto:dmarc@sd41.net",
 		],
 	}),
-	DKIM_BUILDER({
-		selector: "krs",
-		keytype: "rsa",
-		pubkey: "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDAcWBbyljmMd4VrnRC4oqoKUbeZ5ueFpAYtV/+b93xcRbuyVHDm6DowRKzINEpFtASJ5ZxvrjvC/K+JpQ52P05dzZmc3i9bp+Fu2B2zqmxS5gju9Q/EJBJWIgNGRWOxZB5SEvIsTcEQ/7LoLtpmw7qhyxaDVxpElh74D6YEOpatwIDAQAB",
-	}),
-	//TXT("sif1._domainkey", "v=DKIM1; k=rsa; p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDK7AuX4aJjeCqnlypQTvzKoS3eFYRKdsiGC395oZrn1ziPrqfgoY6rPNLmc14N3y5VO/Nl27RnD+FsgtCxbICEjvmfFpxnprY6X4EziAhyyGU3dxku8HsuPDFAs8fuvra4PjrxLYL/2l1Eo8iVGb2L0qdBnCxWK7dDrt4v5+P/uwIDAQAB"),
 	DKIM_BUILDER({
 		selector: "sif1",
 		keytype: "rsa",
