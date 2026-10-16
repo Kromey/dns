@@ -67,3 +67,6 @@ jobs:
               });
             }
 
+      - name: Open an Issue on Failure
+        if: failure()
+        uses: $/.github/workflows/dns-sync-check.yaml
