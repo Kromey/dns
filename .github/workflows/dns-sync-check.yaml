@@ -18,7 +18,7 @@ jobs:
       # 1. RUN PREVIEW (Always runs to get the absolute current live status)
       - name: DNSControl Preview
         id: dns_preview
-        uses: DNSControl/dnscontrol-action@529789a3522a918aef41a1b56c0de435b0f8bc78
+        uses: DNSControl/dnscontrol-action@ae61ea8ff214e6dba00d32fd79c1e0964d84d6d0
         continue-on-error: true
         with:
           cmdargs: preview --expect-no-changes
